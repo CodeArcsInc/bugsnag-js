@@ -45,6 +45,15 @@ module.exports.schema = {
       // ensure no keys other than notify/session are set on endpoints object
       filter(keys(val), k => !includes([ 'notify', 'sessions' ], k)).length === 0
   },
+  headers:{
+    defaultValue: function(){
+      return []
+    },
+    message: 'not required',
+    validate: function (value) {
+      return value === null || value;
+    }
+  },
   autoCaptureSessions: {
     defaultValue: (val, opts) => opts.endpoints === undefined || (!!opts.endpoints && !!opts.endpoints.sessions),
     message: 'should be true|false',

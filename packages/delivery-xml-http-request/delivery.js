@@ -7,13 +7,16 @@ module.exports = (win = window) => ({
       const url = config.endpoints.notify
       const req = new win.XMLHttpRequest()
       req.onreadystatechange = function () {
-        if (req.readyState === win.XMLHttpRequest.DONE) cb(null)
+        if (req.readyState === win.XMLHttpRequest.DONE) cb(null);
+      };
+      req.open('POST', url);
+      req.setRequestHeader('Content-Type', 'application/json');
+      if(config.headers.length > 0){
+        config.headers.forEach(function(header){
+          req.setRequestHeader(header.header, header.value);
+        })
       }
-      req.open('POST', url)
-      req.setRequestHeader('Content-Type', 'application/json')
-      req.setRequestHeader('Bugsnag-Api-Key', report.apiKey || config.apiKey)
-      req.setRequestHeader('Bugsnag-Payload-Version', '4')
-      req.setRequestHeader('Bugsnag-Sent-At', isoDate())
+      req.setRequestHeader('')
       req.send(payload.report(report, config.filters))
     } catch (e) {
       logger.error(e)
@@ -26,11 +29,13 @@ module.exports = (win = window) => ({
       req.onreadystatechange = function () {
         if (req.readyState === win.XMLHttpRequest.DONE) cb(null)
       }
-      req.open('POST', url)
-      req.setRequestHeader('Content-Type', 'application/json')
-      req.setRequestHeader('Bugsnag-Api-Key', config.apiKey)
-      req.setRequestHeader('Bugsnag-Payload-Version', '1')
-      req.setRequestHeader('Bugsnag-Sent-At', isoDate())
+      req.open('POST', url);
+      req.setRequestHeader('Content-Type', 'application/json');
+      if(config.headers.length > 0){
+        config.headers.forEach(function(header){
+          req.setRequestHeader(header.header, header.value);
+        })
+      }
       req.send(payload.session(session, config.filters))
     } catch (e) {
       logger.error(e)
